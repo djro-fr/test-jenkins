@@ -9,6 +9,7 @@ pipeline {
                 sh 'npx create-react-app my-app'
                 sh 'cd my-app'
                 sh 'npm start'
+                
             }
         }
         stage('Test') {
