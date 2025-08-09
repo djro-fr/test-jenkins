@@ -5,8 +5,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'                
-                sh 'node --version'
+                echo 'Building..'               
+                sh 'npx create-react-app my-app'
+                sh 'cd my-app'
+                sh 'npm start'
             }
         }
         stage('Test') {
