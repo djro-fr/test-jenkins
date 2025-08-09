@@ -9,6 +9,7 @@ pipeline {
                 sh 'apk add --no-cache git'
                 checkout scm
             }
+        }
         stage('Build') {
             steps {
                 echo 'Building..'               
