@@ -1,11 +1,11 @@
 pipeline {
 
-    agent { docker { image 'node:22.18.0-alpine3.22' } }
+    agent { docker { image 'node:22.14.0-alpine3.22' } }
 
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'                
+                echo 'Building..14'                
                 sh 'node --version'
             }
         }
