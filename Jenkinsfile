@@ -1,6 +1,11 @@
 pipeline {
 
-    agent { docker { image 'node:24-alpine3.21' } }
+    agent {
+        docker {
+            image 'node:24-alpine3.21'
+            args '-u root:root' // Exécute le conteneur en tant que root
+        }
+    }
 
     stages {
         stage('Checkout') {
