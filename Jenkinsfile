@@ -14,8 +14,8 @@ pipeline {
                 echo 'Installation de Git dans Alpine'
                 sh 'apk update'
                 sh 'apk add git'
-            }
-            steps {
+                
+                echo 'Checkout du Source Control Management"'
                 checkout scm
             }
         }
