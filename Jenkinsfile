@@ -12,17 +12,18 @@ pipeline {
             steps {
                 // Installe Git dans l'image Alpine
                 echo 'Git Installation in Alpine'
-                sh 'apk update'
-                sh 'apk add git'
+                sh '''apk update && apk add --no-cache git'''
             }
         }
         stage('Build') {
             steps {
                 echo 'Building : React with Vite'               
-                sh 'npm create vite@latest my-app -- --template react -- --yes'
-                sh 'cd my-app'
-                sh 'npm install'
-                sh 'npm run dev'
+                sh '''
+                    npm create vite@latest my-app -- --template react -- --yes \
+                    cd my-app \
+                    npm install \
+                    npm run dev
+                '''
             }
         }
         stage('Test') {
