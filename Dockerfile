@@ -19,3 +19,5 @@ COPY package*.json ./
 # On copie tous les fichiers de l'app
 COPY . .
 
+# Commande par défaut : le shell Alpine
+CMD ["/bin/sh"]

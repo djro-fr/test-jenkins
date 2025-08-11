@@ -11,10 +11,6 @@ pipeline {
                 }
             }
             steps {
-                // Installe Git dans l'image Alpine
-                echo 'Git Installation in Alpine'
-                sh 'apk update && apk add --no-cache git'
-
                 echo 'Building: React with Vite'               
                 sh '''
                     cd app \
