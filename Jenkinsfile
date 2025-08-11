@@ -8,24 +8,21 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Git') {
             steps {
                 // Installe Git dans l'image Alpine
-                echo 'Installation de Git dans Alpine'
+                echo 'Git Installation in Alpine'
                 sh 'apk update'
                 sh 'apk add git'
-                
-                echo 'Checkout du Source Control Management"'
-                checkout scm
             }
         }
         stage('Build') {
             steps {
-                echo 'Building..'               
-                sh 'npx create-react-app my-app'
+                echo 'Building : React with Vite'               
+                sh 'npm create vite@latest my-app -- --template react -- --yes'
                 sh 'cd my-app'
-                sh 'npm start'
-
+                sh 'npm install'
+                sh 'npm run dev'
             }
         }
         stage('Test') {
