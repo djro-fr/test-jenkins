@@ -11,7 +11,11 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Installe Git dans l'image Alpine
-                sh 'apk add --no-cache git'
+                echo 'Installation de Git dans Alpine'
+                sh 'apk update'
+                sh 'apk add git'
+            }
+            steps {
                 checkout scm
             }
         }
