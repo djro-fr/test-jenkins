@@ -13,7 +13,6 @@ pipeline {
             steps {
                 echo 'Building: React with Vite'               
                 sh '''
-                    cd app \
                     npm install \
                     npm run dev
                 '''
