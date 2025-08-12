@@ -16,8 +16,9 @@ pipeline {
                 }
             }
             steps {
+                // installe Git
                 sh '''
-                    apk add --no-cache git  # Installe Git
+                    apk add --no-cache git 
                     git --version
                 '''
                 checkout([
@@ -40,8 +41,7 @@ pipeline {
             steps {
                 echo 'Node Dependencies'
                 sh '''
-                    npm create vite@latest app_syl -- --template react \
-                    cd app_syl \
+                    cd app_syl
                     npm install'''
             }
         }
