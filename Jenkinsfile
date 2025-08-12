@@ -73,6 +73,7 @@ pipeline {
                     sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
+        }
         stage('DEPLOY: Exécution Container Docker') {
             // Exécution du conteneur Docker pour s'assurer que
             // l'application s'exécute correctement dans un environnement conteneurisé
