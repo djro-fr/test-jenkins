@@ -2,40 +2,105 @@ pipeline {
     // Pas d'agent global, chaque stage aura son propre agent
     agent none 
 
+    environment {
+        // Variables d'environnement nécessaires pour le déploiement
+        DOCKER_IMAGE = 'la-belle-app-react'
+    }
+
     stages {
-        stage('Build') {
+        stage('BUILD: Checkout Git') {
+            // Récupération du code source depuis le dépôt Git
             agent {
                 docker {
-                    image 'djrofr/la-belle-app-react'
-                    args '-u root:root' 
+                    image 'alpine/git' // Utilise une image Alpine avec Git installé
                 }
             }
             steps {
-                echo 'Building: React with Vite'               
-                sh '''
-                    npm install \
-                    npm run dev
-                '''
+                git branch: 'test-react', 
+                url: 'https://github.com/djro-fr/test-jenkins.git'
+            }            
+        }
+        stage('BUILD: Installation dépendances') {
+            // Installation des dépendances nécessaires
+            // pour construire et exécuter l'application
+            agent {
+                docker {
+                    // Image Node.js sur Alpine
+                    image 'node:alpine' 
+                }
+            }
+            steps {
+                echo 'Node Dependencies'
+                sh 'npm install'
             }
         }
-        stage('Test') {
+        stage('TEST: Exécution des tests unitaires') {
+            // Exécution des tests unitaires 
+            // pour vérifier que le code est exempt d'erreurs
             agent {
                 docker {
-                    image 'djrofr/la-belle-app-react'
+                    // Image Node.js sur Alpine pour les tests
+                    image 'node:alpine' 
                 }
-            }            
+            }
             steps {
-                echo 'Testing..'
+                echo 'Unit Tests with Jest'
+                sh 'npm test' 
             }
         }
-        stage('Deploy') {
+        stage('TEST: Exécution des tests d\'intégration') {
+            // Exécution des tests d'intégration
             agent {
                 docker {
-                    image 'djrofr/la-belle-app-react'
+                    // Image Node.js sur Alpine pour les tests
+                    image 'node:alpine'
                 }
-            }            
+            }
             steps {
-                echo 'Deploying....'
+                echo 'Tests d\'intégration'
+            }
+        }
+        stage('BUILD: Build Docker Image') {
+            // Construction de l'image Docker pour l'application
+            agent {
+                docker {
+                    // Image Docker stable pour construire l'image
+                    image 'docker:stable' 
+                }
+            }  
+            steps {
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        stage('DEPLOY: Exécution Container Docker') {
+            // Exécution du conteneur Docker pour s'assurer que
+            // l'application s'exécute correctement dans un environnement conteneurisé
+            agent {
+                docker {
+                    // Image Docker stable pour exécuter le conteneur
+                    image 'docker:stable' 
+                }
+            }
+            steps {
+                script {
+                    echo 'Déploiement de l\'application en container...'
+                    // sh "docker run -p 80:80 --rm ${DOCKER_IMAGE}"
+                }
+            }
+        }
+        stage('DEPLOY: Déploiement serveur') {
+            // Déploiement de l'application sur un serveur
+            agent {
+                docker {
+                    image 'alpine' // Utilise une image Alpine légère pour le déploiement
+                }
+            }
+            steps {
+                script {
+                    echo 'Déploiement de l\'application...'
+                    // Ajoutez ici les commandes pour déployer votre application
+                }
             }
         }
     }
