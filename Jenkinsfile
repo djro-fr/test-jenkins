@@ -8,19 +8,6 @@ pipeline {
     }
 
     stages {
-        stage('BUILD: Checkout Git') {
-            // Récupération du code source depuis le dépôt Git
-            agent {
-                docker {
-                    image 'alpine/git' // Utilise une image Alpine avec Git installé
-                }
-            }
-            steps {
-                echo 'test'
-                //git branch: 'test-react', 
-                //    url: 'https://github.com/djro-fr/test-jenkins.git'
-            }            
-        }
         stage('BUILD: Installation dépendances') {
             // Installation des dépendances nécessaires
             // pour construire et exécuter l'application
