@@ -8,6 +8,25 @@ pipeline {
     }
 
     stages {
+        stage('BUILD: Checkout Git') {
+            agent {
+                docker {
+                    image 'node:alpine' // Utilise une image Node.js sur Alpine
+                }
+            }
+            steps {
+                sh '''
+                    apk add --no-cache git  # Installe Git
+                    git --version
+                '''
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/test-react']],
+                    extensions: [],
+                    userRemoteConfigs: [[url: 'https://github.com/djro-fr/test-jenkins.git']]
+                ])
+            }
+        }
         stage('BUILD: Installation dépendances') {
             // Installation des dépendances nécessaires
             // pour construire et exécuter l'application
