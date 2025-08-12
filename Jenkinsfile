@@ -11,7 +11,8 @@ pipeline {
         stage('BUILD: Checkout Git') {
             agent {
                 docker {
-                    image 'node:alpine' // Utilise une image Node.js sur Alpine
+                    image 'node:alpine'
+                    args '-u root' // Exécute le conteneur en tant qu'utilisateur root
                 }
             }
             steps {
@@ -25,7 +26,7 @@ pipeline {
                     extensions: [],
                     userRemoteConfigs: [[url: 'https://github.com/djro-fr/test-jenkins.git']]
                 ])
-            }
+            }    }
         }
         stage('BUILD: Installation dépendances') {
             // Installation des dépendances nécessaires
