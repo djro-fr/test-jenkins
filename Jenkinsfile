@@ -79,6 +79,8 @@ pipeline {
                 docker {
                     // Image Docker stable pour construire l'image
                     image 'docker:stable' 
+                    // Monte le socket Docker et exécute en tant que root
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root' 
                 }
             }  
             steps {
@@ -94,6 +96,8 @@ pipeline {
                 docker {
                     // Image Docker stable pour exécuter le conteneur
                     image 'docker:stable' 
+                    // Monte le socket Docker et exécute en tant que root
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root' 
                 }
             }
             steps {
