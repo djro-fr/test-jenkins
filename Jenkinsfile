@@ -12,7 +12,7 @@ pipeline {
             // Récupération du code source depuis le dépôt Git
             agent {
                 docker {
-                    image 'alpine' // Utilise une image Alpine avec Git installé
+                    image 'alpine/git' // Utilise une image Alpine avec Git installé
                 }
             }
             steps {
