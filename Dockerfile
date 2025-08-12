@@ -1,7 +1,7 @@
 # On utilise une image Node.js sur Alpine pour le build
 # Étape de Build : On construit notre application React. 
 # Installation des dépendances et création des fichiers de production 
-FROM node:alpine as build
+FROM node:alpine AS build
 
 # Répertoire de travail
 WORKDIR /app
