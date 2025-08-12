@@ -19,7 +19,10 @@ pipeline {
             }
             steps {
                 echo 'Node Dependencies'
-                sh 'npm install'
+                sh '''
+                    npm create vite@latest app_syl -- --template react \
+                    cd app_syl \
+                    npm install'''
             }
         }
         stage('TEST: Exécution des tests unitaires') {
