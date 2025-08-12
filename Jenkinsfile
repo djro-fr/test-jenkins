@@ -12,30 +12,15 @@ pipeline {
             // Récupération du code source depuis le dépôt Git
             agent {
                 docker {
-                    image 'alpine/git' // Utilise une image Alpine avec Git installé
-                    args '-v /var/jenkins_home:/var/jenkins_home' // Monte le volume nécessaire
+                    image 'alpine' // Utilise une image Alpine avec Git installé
                 }
             }
             steps {
-                script {
-                    // Vérifiez que Git est installé et accessible
-                    sh 'git --version'
-
-                    // Utilisez la commande checkout avec les identifiants si nécessaire
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/test-react']],
-                        extensions: [],
-                        userRemoteConfigs: [[
-                            url: 'https://github.com/djro-fr/test-jenkins.git',
-                            // Ajoutez l'ID des identifiants si votre dépôt est privé
-                            // credentialsId: 'your-credentials-id'
-                        ]]
-                    ])
-                }
-            }
-        }        
-        
+                echo 'test'
+                //git branch: 'test-react', 
+                //    url: 'https://github.com/djro-fr/test-jenkins.git'
+            }            
+        }
         stage('BUILD: Installation dépendances') {
             // Installation des dépendances nécessaires
             // pour construire et exécuter l'application
