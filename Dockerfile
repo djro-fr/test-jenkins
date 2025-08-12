@@ -4,7 +4,7 @@
 FROM node:alpine as build
 
 # Répertoire de travail
-WORKDIR /app_syl
+WORKDIR /app
 
 # On copie les fichiers package (npm)
 COPY package*.json ./
