@@ -4,16 +4,16 @@
 FROM node:alpine AS build
 
 # Répertoire de travail
-WORKDIR /app_syl
+WORKDIR /app
 
 # On copie les fichiers package (npm)
-COPY package*.json ./
+COPY app_syl/package*.json ./
 
 # On installe les dépendances Node
 RUN npm install
 
-# On copie le reste des fichiers de l'application
-COPY . .
+# Copie le reste des fichiers de l'application depuis le répertoire app_syl
+COPY app_syl/ .
 
 # On construit le build de l'application
 RUN npm run build
