@@ -26,7 +26,7 @@ pipeline {
                     extensions: [],
                     userRemoteConfigs: [[url: 'https://github.com/djro-fr/test-jenkins.git']]
                 ])
-            }    }
+            }    
         }
         stage('BUILD: Installation dépendances') {
             // Installation des dépendances nécessaires
