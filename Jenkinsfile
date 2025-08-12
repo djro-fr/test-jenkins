@@ -4,7 +4,8 @@ pipeline {
 
     environment {
         // Variables d'environnement nécessaires pour le déploiement
-        DOCKER_IMAGE = 'djrofr/la-belle-app-react'
+        DOCKER_HUB_USERNAME = 'djrofr'
+        DOCKER_IMAGE = 'la-belle-app-react'
     }
 
     stages {
@@ -70,18 +71,27 @@ pipeline {
             }
         }
         stage('BUILD: Build Docker Image') {
-            // Construction de l'image Docker pour l'application
             agent {
                 docker {
-                    // Image Docker stable pour construire l'image
-                    image 'docker:stable' 
-                    // Monte le socket Docker et exécute en tant que root
-                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root' 
+                    image 'docker:stable'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
                 }
-            }  
+            }
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    withCredentials([string(
+                        credentialsId: 'docker_hub_token', 
+                        variable: 'DOCKER_HUB_TOKEN')]) {
+                        sh '''
+                            echo $DOCKER_HUB_TOKEN | \
+                            docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                        '''
+                    }
+                    sh '''
+                        docker build -t ${DOCKER_IMAGE} . &&
+                        docker tag ${DOCKER_IMAGE} $DOCKER_HUB_USERNAME/${DOCKER_IMAGE}:latest &&
+                        docker push $DOCKER_HUB_USERNAME/${DOCKER_IMAGE}:latest
+                    '''
                 }
             }
         }
