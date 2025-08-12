@@ -21,12 +21,8 @@ pipeline {
                     apk add --no-cache git 
                     git --version
                 '''
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/test-react']],
-                    extensions: [],
-                    userRemoteConfigs: [[url: 'https://github.com/djro-fr/test-jenkins.git']]
-                ])
+                // Utilise la configuration SCM définie dans le projet Jenkins
+                checkout scm 
             }    
         }
         stage('BUILD: Installation dépendances') {
