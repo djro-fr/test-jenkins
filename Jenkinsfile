@@ -38,10 +38,11 @@ pipeline {
                 }
             }
             steps {
-                echo "Node Dependencies'
+                echo "Node Dependencies"
                 sh '''
                     cd app_syl
-                    npm install'''
+                    npm install
+                '''
             }
         }
         stage('TEST: Exécution des tests unitaires') {
@@ -54,7 +55,7 @@ pipeline {
                 }
             }
             steps {
-                echo "Unit Tests with Jest'
+                echo "Unit Tests with Jest"
                 sh '''
                     cd app_syl
                     npm run unit_test'''
@@ -69,7 +70,7 @@ pipeline {
                 }
             }
             steps {
-                echo "Tests d\'intégration'
+                echo "Tests d'intégration"
             }
         }
         stage('TEST: Exécution des tests UI (Selenium)') {
@@ -173,7 +174,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Déploiement de l\'application en container...'
+                    echo "Déploiement de l\'application en container..."
                     // sh "docker run -p 80:80 --rm ${DOCKER_IMAGE}"
                 }
             }
@@ -187,7 +188,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Déploiement de l\'application...'
+                    echo "Déploiement de l\'application..."
                     // Ajoutez ici les commandes pour déployer votre application
                 }
             }
