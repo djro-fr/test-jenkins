@@ -75,7 +75,7 @@ pipeline {
         }
         stage('TEST: Exécution des tests UI (Selenium)') {
             options {
-                ansiColor('xterm')  # Active les couleurs
+                ansiColor('xterm')  // Active les couleurs
             }            
             agent {
                 docker {
