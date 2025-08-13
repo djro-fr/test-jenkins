@@ -90,50 +90,50 @@ pipeline {
                 // 5- Arrête Vite même si les tests échouent, 
                 //    Affiche les echos pour le débogage en cas d'erreur
                 sh '''
+                    cd app_syl
+                    options {
+                        ansiColor('xterm')  # Active les couleurs
+                    }
 
-                    cd app_syl                   
-                   
-                    echo " 1- Installation des dépendances pour Selenium"
-                    echo " ...................."
-                    apt-get update && apt-get install -y firefox-esr wget netcat-openbsd
-                    wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+                    # Installation des dépendances
+                    echo -e "\033[1;32m→ 1- Installation des dépendances pour Selenium \033[0m"
+                    apt-get update -qq > /dev/null
+                    apt-get install -y firefox-esr wget netcat-openbsd > /dev/null
+                    wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz -q
                     tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
                     chmod +x geckodriver
                     mv geckodriver /usr/bin/
 
-                    echo " 2- Lance Vite en arrière-plan (sur 0.0.0.0)"
-                    echo "  et récupère le PID pour pouvoir tuer le processus plus tard"
-                    echo " ...................."
-                    npm run dev -- --host 0.0.0.0 > react.echo 2>&1 &
-                    PID=$!  
+                    # Lancement de Vite
+                    echo -e "\033[1;32m→ 2- Lancement de Vite sur le port ${REACT_APP_PORT} \033[0m"
+                    npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
+                    PID=$!
+                    sleep 10
 
-                    echo " 3- Attends que le port 5173 soit ouvert"
-                    echo " ...................."
-                    echo "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
+                    # Vérification du port
+                    echo -e "\033[1;32m→ 3- Vérification du port ${REACT_APP_PORT} \033[0m"
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
                     while ! nc -z localhost ${REACT_APP_PORT}; do
-                    if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
-                        echo "Timeout: Le port ${REACT_APP_PORT} n'est pas accessible après $MAX_ATTEMPTS tentatives"
-                        cat react.echo
-                        exit 1
-                    fi
-                    ATTEMPT=$((ATTEMPT + 1))
-                    sleep 2
-                    echo "Tentative $ATTEMPT/$MAX_ATTEMPTS..."
+                        if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
+                            echo -e "\033[1;31m❌ Timeout: Port ${REACT_APP_PORT} inaccessible \033[0m" >&2
+                            cat react.log >&2
+                            exit 1
+                        fi
+                        ATTEMPT=$((ATTEMPT + 1))
+                        sleep 2
+                        echo -e "\033[1;33m→ Tentative $ATTEMPT/$MAX_ATTEMPTS... \033[0m" >&2
                     done
-                    echo "Vite est prêt !"
-                    
-                    echo " 4- Exécute les tests Selenium avec Firefox"
-                    echo ":::::::::::::::::::::::::::::::::::::::::::"
-                    npm run ui_test
-                    echo ":::::::::::::::::::::::::::::::::::::::::::"
+                    echo -e "\033[1;32m✅ Vite est prêt sur le port ${REACT_APP_PORT} ! \033[0m"
 
-                    echo " 5- Arrête Vite même si les tests échouent, "
-                    echo "    Affiche les echos pour le débogage en cas d'erreur"
-                    echo " ...................."
+                    # Exécution des tests
+                    echo -e "\033[1;32m→ 4- Exécution des tests Selenium \033[0m"
+                    npm run ui_test
+
+                    # Nettoyage
+                    echo -e "\033[1;32m→ 5- Nettoyage \033[0m"
                     kill $PID || true
-                    cat react.echo 
+                    cat react.log >&2
                 '''
             }
         }
@@ -151,7 +151,7 @@ pipeline {
                         variable: 'DOCKER_HUB_TOKEN')]) {
                         sh '''
                             echo $DOCKER_HUB_TOKEN | \
-                            docker echoin -u $DOCKER_HUB_USERNAME --password-stdin
+                            docker login -u $DOCKER_HUB_USERNAME --password-stdin
                         '''
                     }
                     sh '''
