@@ -91,22 +91,22 @@ pipeline {
                 sh '''
                     cd app_syl                   
                    
-                    # 1- Installation des dépendances pour Selenium
-                    # ....................
+                    echo ' 1- Installation des dépendances pour Selenium'
+                    echo ' ....................'
                     apt-get update && apt-get install -y firefox-esr wget netcat-openbsd
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
                     tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
                     chmod +x geckodriver
                     mv geckodriver /usr/bin/
 
-                    # 2- Lance Vite en arrière-plan (sur 0.0.0.0)
-                    # ....................
-                    #  et récupère le PID pour pouvoir tuer le processus plus tard
+                    echo ' 2- Lance Vite en arrière-plan (sur 0.0.0.0)'
+                    echo '  et récupère le PID pour pouvoir tuer le processus plus tard'
+                    echo ' ....................'
                     npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
                     PID=$!  
 
-                    # 3- 3- Attends que le port 5173 soit ouvert
-                    # ....................
+                    echo ' 3- 3- Attends que le port 5173 soit ouvert'
+                    echo ' ....................'
                     echo "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
@@ -122,15 +122,14 @@ pipeline {
                     done
                     echo "Vite est prêt !"
                     
-                    # 4- Exécute les tests Selenium avec Firefox
-                    # ....................
+                    echo ' 4- Exécute les tests Selenium avec Firefox'
                     echo ':::::::::::::::::::::::::::::::::::::::::::'
                     npm run ui_test
                     echo ':::::::::::::::::::::::::::::::::::::::::::'
 
-                    # 5- Arrête Vite même si les tests échouent, 
-                  #    Affiche les logs pour le débogage en cas d'erreur
-                    # ....................
+                    echo ' 5- Arrête Vite même si les tests échouent, '
+                    echo '    Affiche les logs pour le débogage en cas d'erreur'
+                    echo ' ....................'
                     kill $PID || true
                     cat react.log 
                 '''
