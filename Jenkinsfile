@@ -81,30 +81,44 @@ pipeline {
                 }
             }
             steps {
-                // - Installation des dépendances pour Selenium
-                // - Lance l'app en arrière-plan avec redirection des logs
-                // - Attends que l'app soit prête
-                // - Vérifie que l'app est accessible
-                // - Exécute les tests Selenium avec Firefox
-                // - Arrête l'app même si les tests échouent, 
-                //   Affiche les logs en cas d'erreur
+                // 1- Installation des dépendances pour Selenium
+                // 2- Lance Vite en arrière-plan (sur 0.0.0.0)
+                //    et récupère le PID pour pouvoir tuer le processus plus tard
+                // 3- Attends que le port 5173 soit ouvert
+                // 4- Exécute les tests Selenium avec Firefox
+                // 5- Arrête Vite même si les tests échouent, 
+                //    Affiche les logs pour le débogage en cas d'erreur
                 sh '''
-                    cd app_syl
-
-                    apt-get update && apt-get install -y firefox-esr wget xvfb
+                    cd app_syl                   
+                   
+                    apt-get update && apt-get install -y firefox-esr wget netcat-openbsd
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
                     tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
                     chmod +x geckodriver
                     mv geckodriver /usr/bin/
 
-                    npm run dev > react.log 2>&1 & sleep 20 
-                    
-                    npx wait-on ${REACT_APP_URL} --timeout 30000
-                    
+                    npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
+                    PID=$!  
+
+                    echo "Attente du démarrage de Vite sur le port 5173..."
+                    MAX_ATTEMPTS=15
+                    ATTEMPT=0
+                    while ! nc -z localhost 5173; do
+                    if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
+                        echo "Timeout: Le port 5173 n'est pas accessible après $MAX_ATTEMPTS tentatives"
+                        cat react.log
+                        exit 1
+                    fi
+                    ATTEMPT=$((ATTEMPT + 1))
+                    sleep 2
+                    echo "Tentative $ATTEMPT/$MAX_ATTEMPTS..."
+                    done
+                    echo "Vite est prêt !"
+
                     npm run ui_test
-                    
-                    pkill -f "npm run dev" || true
-                    cat react.log  
+
+                    kill $PID || true
+                    cat react.log 
                 '''
             }
         }
