@@ -90,9 +90,12 @@ pipeline {
                 // 5- Arrête Vite même si les tests échouent, 
                 //    Affiche les logs pour le débogage en cas d'erreur
                 sh '''
-                    # fonction pour afficher les messages sans duplication
+                    # Masquer l'affichage des commandes (supprime les "+" dans Jenkins)
+                    export PS4=''
+
+                    # Fonction pour afficher les messages sans duplication
                     log() {
-                        printf "\n\033[1;34m→ %s\033[0m\n $1"  # Affiche en bleu avec une flèche
+                        echo "→ $1"
                     }
 
                     cd app_syl                   
