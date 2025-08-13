@@ -6,6 +6,8 @@ pipeline {
         // Variables d'environnement nécessaires pour le déploiement
         DOCKER_HUB_USERNAME = 'djrofr'
         DOCKER_IMAGE = 'la-belle-app-react'
+        REACT_APP_URL = 'http://localhost:5173'
+        REACT_APP_PORT = '5173'  // Port de ton app Vite/React
     }
 
     stages {
@@ -68,6 +70,42 @@ pipeline {
             }
             steps {
                 echo 'Tests d\'intégration'
+            }
+        }
+        stage('TEST: Exécution des tests UI (Selenium)') {
+            agent {
+                docker {
+                    // Utilise une image Node.js standard
+                    image 'node:20'
+                    args '-u root'
+                }
+            }
+            steps {
+                // - Installation des dépendances pour Selenium
+                // - Lance l'app en arrière-plan avec redirection des logs
+                // - Attends que l'app soit prête
+                // - Vérifie que l'app est accessible
+                // - Exécute les tests Selenium avec Firefox
+                // - Arrête l'app même si les tests échouent, 
+                //   Affiche les logs en cas d'erreur
+                sh '''
+                    cd app_syl
+
+                    apt-get update && apt-get install -y firefox-esr wget xvfb
+                    wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+                    tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
+                    chmod +x geckodriver
+                    mv geckodriver /usr/bin/
+
+                    npm run dev > react.log 2>&1 & sleep 20 
+                    
+                    npx wait-on ${REACT_APP_URL} --timeout 30000
+                    
+                    npm run ui_test
+                    
+                    pkill -f "npm run dev" || true
+                    cat react.log  
+                '''
             }
         }
         stage('BUILD: Build Docker Image') {
