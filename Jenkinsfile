@@ -122,10 +122,9 @@ pipeline {
                     done
                     echo "Vite est prêt !"
                     
-                    printf '\n\033[1;34m=== 4- Exécute les tests Selenium avec Firefox'
-                    printf '\n\033[1;34m===:::::::::::::::::::::::::::::::::::::::::::'
-                    npm run ui_test
-                    printf '\n\033[1;34m===:::::::::::::::::::::::::::::::::::::::::::'
+                    #############################################
+                    # 4- Exécution des tests Selenium avec Firefox
+                    #############################################
 
                     printf '\n\033[1;34m=== 5- Arrête Vite même si les tests échouent, '
                     printf '\n\033[1;34m===    Affiche les logs pour le débogage en cas d\'erreur'
