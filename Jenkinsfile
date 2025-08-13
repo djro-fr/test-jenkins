@@ -74,6 +74,9 @@ pipeline {
             }
         }
         stage('TEST: Exécution des tests UI (Selenium)') {
+            options {
+                ansiColor('xterm')  # Active les couleurs
+            }            
             agent {
                 docker {
                     // Utilise une image Node.js standard
@@ -91,9 +94,6 @@ pipeline {
                 //    Affiche les echos pour le débogage en cas d'erreur
                 sh '''
                     cd app_syl
-                    options {
-                        ansiColor('xterm')  # Active les couleurs
-                    }
 
                     # Installation des dépendances
                     echo -e "\033[1;32m→ 1- Installation des dépendances pour Selenium \033[0m"
