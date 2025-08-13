@@ -88,38 +88,34 @@ pipeline {
                 // 3- Attends que le port 5173 soit ouvert
                 // 4- Exécute les tests Selenium avec Firefox
                 // 5- Arrête Vite même si les tests échouent, 
-                //    Affiche les logs pour le débogage en cas d'erreur
+                //    Affiche les echos pour le débogage en cas d'erreur
                 sh '''
-                    # Fonction pour afficher les messages sans le "+" de Jenkins
-                    log() {
-                        echo "→ $1" >&2  # Redirige vers stderr pour éviter le "+"
-                    }
 
                     cd app_syl                   
                    
-                    log " 1- Installation des dépendances pour Selenium"
-                    log " ...................."
+                    echo " 1- Installation des dépendances pour Selenium"
+                    echo " ...................."
                     apt-get update && apt-get install -y firefox-esr wget netcat-openbsd
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
                     tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
                     chmod +x geckodriver
                     mv geckodriver /usr/bin/
 
-                    log " 2- Lance Vite en arrière-plan (sur 0.0.0.0)"
-                    log "  et récupère le PID pour pouvoir tuer le processus plus tard"
-                    log " ...................."
-                    npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
+                    echo " 2- Lance Vite en arrière-plan (sur 0.0.0.0)"
+                    echo "  et récupère le PID pour pouvoir tuer le processus plus tard"
+                    echo " ...................."
+                    npm run dev -- --host 0.0.0.0 > react.echo 2>&1 &
                     PID=$!  
 
-                    log " 3- Attends que le port 5173 soit ouvert"
-                    log " ...................."
-                    log "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
+                    echo " 3- Attends que le port 5173 soit ouvert"
+                    echo " ...................."
+                    echo "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
                     while ! nc -z localhost ${REACT_APP_PORT}; do
                     if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
                         echo "Timeout: Le port ${REACT_APP_PORT} n'est pas accessible après $MAX_ATTEMPTS tentatives"
-                        cat react.log
+                        cat react.echo
                         exit 1
                     fi
                     ATTEMPT=$((ATTEMPT + 1))
@@ -128,16 +124,16 @@ pipeline {
                     done
                     echo "Vite est prêt !"
                     
-                    log " 4- Exécute les tests Selenium avec Firefox"
-                    log ":::::::::::::::::::::::::::::::::::::::::::"
+                    echo " 4- Exécute les tests Selenium avec Firefox"
+                    echo ":::::::::::::::::::::::::::::::::::::::::::"
                     npm run ui_test
-                    log ":::::::::::::::::::::::::::::::::::::::::::"
+                    echo ":::::::::::::::::::::::::::::::::::::::::::"
 
-                    log " 5- Arrête Vite même si les tests échouent, "
-                    log "    Affiche les logs pour le débogage en cas d'erreur"
-                    log " ...................."
+                    echo " 5- Arrête Vite même si les tests échouent, "
+                    echo "    Affiche les echos pour le débogage en cas d'erreur"
+                    echo " ...................."
                     kill $PID || true
-                    cat react.log 
+                    cat react.echo 
                 '''
             }
         }
@@ -155,7 +151,7 @@ pipeline {
                         variable: 'DOCKER_HUB_TOKEN')]) {
                         sh '''
                             echo $DOCKER_HUB_TOKEN | \
-                            docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                            docker echoin -u $DOCKER_HUB_USERNAME --password-stdin
                         '''
                     }
                     sh '''
