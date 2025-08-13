@@ -92,7 +92,7 @@ pipeline {
                 sh '''
                     # fonction pour afficher les messages sans duplication
                     log() {
-                        printf "\n\033[1;34m→ %s\033[0m\n" "$1"  # Affiche en bleu avec une flèche
+                        printf "\n\033[1;34m→ %s\033[0m\n $1"  # Affiche en bleu avec une flèche
                     }
 
                     cd app_syl                   
