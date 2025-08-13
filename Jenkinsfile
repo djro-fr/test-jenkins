@@ -73,10 +73,7 @@ pipeline {
                 echo "Tests d'intégration"
             }
         }
-        stage('TEST: Exécution des tests UI (Selenium)') {
-            options {
-                ansiColor('xterm')  // Active les couleurs
-            }            
+        stage('TEST: Exécution des tests UI (Selenium)') {      
             agent {
                 docker {
                     // Utilise une image Node.js standard
@@ -96,7 +93,7 @@ pipeline {
                     cd app_syl
 
                     # Installation des dépendances
-                    echo -e "\033[1;32m→ 1- Installation des dépendances pour Selenium \033[0m"
+                    printf "\n\033[1;32m→ 1- Installation des dépendances pour Selenium \033[0m\n"
                     apt-get update -qq > /dev/null
                     apt-get install -y firefox-esr wget netcat-openbsd > /dev/null
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz -q
@@ -105,33 +102,33 @@ pipeline {
                     mv geckodriver /usr/bin/
 
                     # Lancement de Vite
-                    echo -e "\033[1;32m→ 2- Lancement de Vite sur le port ${REACT_APP_PORT} \033[0m"
+                    printf "\n\033[1;32m→ 2- Lancement de Vite sur le port ${REACT_APP_PORT} \033[0m\n"
                     npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
                     PID=$!
                     sleep 10
 
                     # Vérification du port
-                    echo -e "\033[1;32m→ 3- Vérification du port ${REACT_APP_PORT} \033[0m"
+                    printf "\n\033[1;32m→ 3- Vérification du port ${REACT_APP_PORT} \033[0m\n"
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
                     while ! nc -z localhost ${REACT_APP_PORT}; do
                         if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
-                            echo -e "\033[1;31m❌ Timeout: Port ${REACT_APP_PORT} inaccessible \033[0m" >&2
+                            echo -e "\033[1;31m❌ Timeout: Port ${REACT_APP_PORT} inaccessible \033[0m\n" >&2
                             cat react.log >&2
                             exit 1
                         fi
                         ATTEMPT=$((ATTEMPT + 1))
                         sleep 2
-                        echo -e "\033[1;33m→ Tentative $ATTEMPT/$MAX_ATTEMPTS... \033[0m" >&2
+                        echo -e "\033[1;33m→ Tentative $ATTEMPT/$MAX_ATTEMPTS... \033[0m\n" >&2
                     done
-                    echo -e "\033[1;32m✅ Vite est prêt sur le port ${REACT_APP_PORT} ! \033[0m"
+                    printf "\n\033[1;32m✅ Vite est prêt sur le port ${REACT_APP_PORT} ! \033[0m\n"
 
                     # Exécution des tests
-                    echo -e "\033[1;32m→ 4- Exécution des tests Selenium \033[0m"
+                    printf "\n\033[1;32m→ 4- Exécution des tests Selenium \033[0m\n"
                     npm run ui_test
 
                     # Nettoyage
-                    echo -e "\033[1;32m→ 5- Nettoyage \033[0m"
+                    printf "\n\033[1;32m→ 5- Nettoyage \033[0m\n"
                     kill $PID || true
                     cat react.log >&2
                 '''
