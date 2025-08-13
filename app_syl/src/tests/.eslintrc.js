@@ -1,3 +1,5 @@
+// Gestion des erreurs vscode avec eslint et mocha
+
 module.exports = {
   env: {
     mocha: true,
