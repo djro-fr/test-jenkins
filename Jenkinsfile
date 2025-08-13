@@ -38,7 +38,7 @@ pipeline {
                 }
             }
             steps {
-                echo 'Node Dependencies'
+                echo "Node Dependencies'
                 sh '''
                     cd app_syl
                     npm install'''
@@ -54,7 +54,7 @@ pipeline {
                 }
             }
             steps {
-                echo 'Unit Tests with Jest'
+                echo "Unit Tests with Jest'
                 sh '''
                     cd app_syl
                     npm run unit_test'''
@@ -69,7 +69,7 @@ pipeline {
                 }
             }
             steps {
-                echo 'Tests d\'intégration'
+                echo "Tests d\'intégration'
             }
         }
         stage('TEST: Exécution des tests UI (Selenium)') {
@@ -91,23 +91,23 @@ pipeline {
                 sh '''
                     cd app_syl                   
                    
-                    printf '\n\033[1;34m=== 1- Installation des dépendances pour Selenium'
-                    printf '\n\033[1;34m=== ....................'
+                    log " 1- Installation des dépendances pour Selenium"
+                    log " ...................."
                     apt-get update && apt-get install -y firefox-esr wget netcat-openbsd
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
                     tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
                     chmod +x geckodriver
                     mv geckodriver /usr/bin/
 
-                    printf '\n\033[1;34m=== 2- Lance Vite en arrière-plan (sur 0.0.0.0)'
-                    printf '\n\033[1;34m===  et récupère le PID pour pouvoir tuer le processus plus tard'
-                    printf '\n\033[1;34m=== ....................'
+                    log " 2- Lance Vite en arrière-plan (sur 0.0.0.0)"
+                    log "  et récupère le PID pour pouvoir tuer le processus plus tard"
+                    log " ...................."
                     npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
                     PID=$!  
 
-                    printf '\n\033[1;34m=== 3- 3- Attends que le port 5173 soit ouvert'
-                    printf '\n\033[1;34m=== ....................'
-                    echo "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
+                    log " 3- Attends que le port 5173 soit ouvert"
+                    log " ...................."
+                    log "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
                     while ! nc -z localhost ${REACT_APP_PORT}; do
@@ -122,13 +122,14 @@ pipeline {
                     done
                     echo "Vite est prêt !"
                     
-                    #############################################
-                    # 4- Exécution des tests Selenium avec Firefox
-                    #############################################
+                    log " 4- Exécute les tests Selenium avec Firefox"
+                    log ":::::::::::::::::::::::::::::::::::::::::::"
+                    npm run ui_test
+                    log ":::::::::::::::::::::::::::::::::::::::::::"
 
-                    printf '\n\033[1;34m=== 5- Arrête Vite même si les tests échouent, '
-                    printf '\n\033[1;34m===    Affiche les logs pour le débogage en cas d\'erreur'
-                    printf '\n\033[1;34m=== ....................'
+                    log " 5- Arrête Vite même si les tests échouent, "
+                    log "    Affiche les logs pour le débogage en cas d'erreur"
+                    log " ...................."
                     kill $PID || true
                     cat react.log 
                 '''
@@ -172,7 +173,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo 'Déploiement de l\'application en container...'
+                    echo "Déploiement de l\'application en container...'
                     // sh "docker run -p 80:80 --rm ${DOCKER_IMAGE}"
                 }
             }
@@ -186,7 +187,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo 'Déploiement de l\'application...'
+                    echo "Déploiement de l\'application...'
                     // Ajoutez ici les commandes pour déployer votre application
                 }
             }
