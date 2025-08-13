@@ -57,7 +57,7 @@ pipeline {
                 echo 'Unit Tests with Jest'
                 sh '''
                     cd app_syl
-                    npm unit_test'''
+                    npm run unit_test'''
             }
         }
         stage('TEST: Exécution des tests d\'intégration') {
