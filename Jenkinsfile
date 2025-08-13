@@ -113,13 +113,13 @@ pipeline {
                     ATTEMPT=0
                     while ! nc -z localhost ${REACT_APP_PORT}; do
                         if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
-                            echo -e "\033[1;31m❌ Timeout: Port ${REACT_APP_PORT} inaccessible \033[0m\n" >&2
+                            echo "❌ Timeout: Port ${REACT_APP_PORT} inaccessible" >&2
                             cat react.log >&2
                             exit 1
                         fi
                         ATTEMPT=$((ATTEMPT + 1))
                         sleep 2
-                        echo -e "\033[1;33m→ Tentative $ATTEMPT/$MAX_ATTEMPTS... \033[0m\n" >&2
+                        echo "Tentative $ATTEMPT/$MAX_ATTEMPTS..." >&2
                     done
                     printf "\n\033[1;32m✅ Vite est prêt sur le port ${REACT_APP_PORT} ! \033[0m\n"
 
