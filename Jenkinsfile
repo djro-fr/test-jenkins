@@ -128,7 +128,7 @@ pipeline {
                     printf '\n\033[1;34m===:::::::::::::::::::::::::::::::::::::::::::'
 
                     printf '\n\033[1;34m=== 5- Arrête Vite même si les tests échouent, '
-                    printf '\n\033[1;34m===    Affiche les logs pour le débogage en cas d'erreur'
+                    printf '\n\033[1;34m===    Affiche les logs pour le débogage en cas d\'erreur'
                     printf '\n\033[1;34m=== ....................'
                     kill $PID || true
                     cat react.log 
