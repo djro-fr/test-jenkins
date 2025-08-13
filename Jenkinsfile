@@ -57,7 +57,7 @@ pipeline {
                 echo 'Unit Tests with Jest'
                 sh '''
                     cd app_syl
-                    npm test'''
+                    npm unit_test'''
             }
         }
         stage('TEST: Exécution des tests d\'intégration') {
@@ -114,8 +114,10 @@ pipeline {
                     echo "Tentative $ATTEMPT/$MAX_ATTEMPTS..."
                     done
                     echo "Vite est prêt !"
-
+                    
+                    echo ':::::::::::::::::::::::::::::::::::::::::::'
                     npm run ui_test
+                    echo ':::::::::::::::::::::::::::::::::::::::::::'
 
                     kill $PID || true
                     cat react.log 

@@ -8,8 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest src/unit/*.test.js",
-    "ui_test": "npx mocha src/selenium/*.test.js"
+    "unit_test": "jest src/tests/jest/*.test.js",
+    "ui_test": "npx mocha src/tests/selenium/*.test.js"
   },
   "dependencies": {
     "react": "^19.1.1",
