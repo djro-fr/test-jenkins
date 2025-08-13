@@ -91,22 +91,22 @@ pipeline {
                 sh '''
                     cd app_syl                   
                    
-                    echo ' 1- Installation des dépendances pour Selenium'
-                    echo ' ....................'
+                    printf '\n\033[1;34m=== 1- Installation des dépendances pour Selenium'
+                    printf '\n\033[1;34m=== ....................'
                     apt-get update && apt-get install -y firefox-esr wget netcat-openbsd
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
                     tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
                     chmod +x geckodriver
                     mv geckodriver /usr/bin/
 
-                    echo ' 2- Lance Vite en arrière-plan (sur 0.0.0.0)'
-                    echo '  et récupère le PID pour pouvoir tuer le processus plus tard'
-                    echo ' ....................'
+                    printf '\n\033[1;34m=== 2- Lance Vite en arrière-plan (sur 0.0.0.0)'
+                    printf '\n\033[1;34m===  et récupère le PID pour pouvoir tuer le processus plus tard'
+                    printf '\n\033[1;34m=== ....................'
                     npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
                     PID=$!  
 
-                    echo ' 3- 3- Attends que le port 5173 soit ouvert'
-                    echo ' ....................'
+                    printf '\n\033[1;34m=== 3- 3- Attends que le port 5173 soit ouvert'
+                    printf '\n\033[1;34m=== ....................'
                     echo "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
@@ -122,14 +122,14 @@ pipeline {
                     done
                     echo "Vite est prêt !"
                     
-                    echo ' 4- Exécute les tests Selenium avec Firefox'
-                    echo ':::::::::::::::::::::::::::::::::::::::::::'
+                    printf '\n\033[1;34m=== 4- Exécute les tests Selenium avec Firefox'
+                    printf '\n\033[1;34m===:::::::::::::::::::::::::::::::::::::::::::'
                     npm run ui_test
-                    echo ':::::::::::::::::::::::::::::::::::::::::::'
+                    printf '\n\033[1;34m===:::::::::::::::::::::::::::::::::::::::::::'
 
-                    echo ' 5- Arrête Vite même si les tests échouent, '
-                    echo '    Affiche les logs pour le débogage en cas d'erreur'
-                    echo ' ....................'
+                    printf '\n\033[1;34m=== 5- Arrête Vite même si les tests échouent, '
+                    printf '\n\033[1;34m===    Affiche les logs pour le débogage en cas d'erreur'
+                    printf '\n\033[1;34m=== ....................'
                     kill $PID || true
                     cat react.log 
                 '''
