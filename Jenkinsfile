@@ -93,7 +93,7 @@ pipeline {
                     cd app_syl
 
                     # Installation des dépendances
-                    printf "\n\033[1;32m→ 1- Installation des dépendances pour Selenium \033[0m"
+                    printf "\033[1;32m→ 1- Installation des dépendances pour Selenium \033[0m\n"
                     apt-get update -qq > /dev/null
                     apt-get install -y firefox-esr wget netcat-openbsd > /dev/null
                     wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz -q
@@ -102,13 +102,13 @@ pipeline {
                     mv geckodriver /usr/bin/
 
                     # Lancement de Vite
-                    printf "\n\033[1;32m→ 2- Lancement de Vite sur le port ${REACT_APP_PORT} \033[0m"
+                    printf "\033[1;32m→ 2- Lancement de Vite sur le port ${REACT_APP_PORT} \033[0m\n"
                     npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
                     PID=$!
                     sleep 10
 
                     # Vérification du port
-                    printf "\n\033[1;32m→ 3- Vérification du port ${REACT_APP_PORT} \033[0m"
+                    printf "\033[1;32m→ 3- Vérification du port ${REACT_APP_PORT} \033[0m\n"
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
                     while ! nc -z localhost ${REACT_APP_PORT}; do
@@ -124,11 +124,11 @@ pipeline {
                     echo "Vite est prêt sur le port ${REACT_APP_PORT} !"
 
                     # Exécution des tests
-                    printf "\n\033[1;32m→ 4- Exécution des tests Selenium \033[0m"
+                    printf "\033[1;32m→ 4- Exécution des tests Selenium \033[0m\n"
                     npm run ui_test
 
                     # Nettoyage
-                    printf "\n\033[1;32m→ 5- Nettoyage \033[0m"
+                    printf "\033[1;32m→ 5- Nettoyage \033[0m\n"
                     kill $PID || true
                     cat react.log >&2
                 '''
