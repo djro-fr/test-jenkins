@@ -7,7 +7,7 @@ pipeline {
         DOCKER_HUB_USERNAME = 'djrofr'
         DOCKER_IMAGE = 'la-belle-app-react'
         REACT_APP_URL = 'http://localhost:5173'
-        REACT_APP_PORT = '5173'  // Port de ton app Vite/React
+        REACT_APP_PORT = '5173'  
     }
 
     stages {
@@ -100,12 +100,12 @@ pipeline {
                     npm run dev -- --host 0.0.0.0 > react.log 2>&1 &
                     PID=$!  
 
-                    echo "Attente du démarrage de Vite sur le port 5173..."
+                    echo "Attente du démarrage de Vite sur le port ${REACT_APP_PORT}..."
                     MAX_ATTEMPTS=15
                     ATTEMPT=0
-                    while ! nc -z localhost 5173; do
+                    while ! nc -z localhost ${REACT_APP_PORT}; do
                     if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
-                        echo "Timeout: Le port 5173 n'est pas accessible après $MAX_ATTEMPTS tentatives"
+                        echo "Timeout: Le port ${REACT_APP_PORT} n'est pas accessible après $MAX_ATTEMPTS tentatives"
                         cat react.log
                         exit 1
                     fi
